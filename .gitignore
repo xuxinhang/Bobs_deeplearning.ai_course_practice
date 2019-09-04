@@ -2,3 +2,10 @@ __pycache__
 .vscode
 *.mp4
 .ipynb*
+
+
+# Ignore some data files with large sizes
+**/data/*
+**/model/*
+**/*.zip
+
