@@ -16,20 +16,20 @@ ix_to_char = { i:ch for i,ch in enumerate(sorted(chars)) }
 def clip(gradients, maxValue):
     '''
     Clips the gradients' values between minimum and maximum.
-    
+
     Arguments:
     gradients -- a dictionary containing the gradients "dWaa", "dWax", "dWya", "db", "dby"
     maxValue -- everything above this number is set to this number, and everything less than -maxValue is set to -maxValue
-    
-    Returns: 
+
+    Returns:
     gradients -- a dictionary with the clipped gradients.
     '''
-    
+
     dWaa, dWax, dWya, db, dby = gradients['dWaa'], gradients['dWax'], gradients['dWya'], gradients['db'], gradients['dby']
-   
+
     for grad in [dWax, dWaa, dWya, db, dby]:
         np.clip(grad, -maxValue, maxValue, out=grad)
-    
+
     return {"dWaa": dWaa, "dWax": dWax, "dWya": dWya, "db": db, "dby": dby}
 
 def test_clip():
@@ -52,7 +52,7 @@ def sample(parameters, char_to_ix, seed):
     Sample a sequence of characters according to a sequence of probability distributions output of the RNN
 
     Arguments:
-    parameters -- python dictionary containing the parameters Waa, Wax, Wya, by, and b. 
+    parameters -- python dictionary containing the parameters Waa, Wax, Wya, by, and b.
     char_to_ix -- python dictionary mapping each character to an index.
     seed -- used for grading purposes. Do not worry about it.
 
@@ -87,7 +87,7 @@ def sample(parameters, char_to_ix, seed):
         a_prev = a
         seed += 1
         counter += 1
-    
+
     if (counter == 50):
         indices.append(char_to_ix['\n'])
 
@@ -111,7 +111,7 @@ def test_sample():
 def optimize(X, Y, a_prev, parameters, learning_rate = 0.01):
     """
     Execute one step of the optimization to train the model.
-    
+
     Arguments:
     X -- list of integers, where each integer is a number that maps to a character in the vocabulary.
     Y -- list of integers, exactly the same as X but shifted one index to the left.
@@ -123,7 +123,7 @@ def optimize(X, Y, a_prev, parameters, learning_rate = 0.01):
                         b --  Bias, numpy array of shape (n_a, 1)
                         by -- Bias relating the hidden-state to the output, numpy array of shape (n_y, 1)
     learning_rate -- learning rate for the model.
-    
+
     Returns:
     loss -- value of the loss function (cross-entropy)
     gradients -- python dictionary containing:
@@ -165,17 +165,17 @@ def test_optimize():
 
 def model_(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_names = 7, vocab_size = 27):
     """
-    Trains the model and generates dinosaur names. 
-    
+    Trains the model and generates dinosaur names.
+
     Arguments:
     data -- text corpus
     ix_to_char -- dictionary that maps the index to a character
     char_to_ix -- dictionary that maps a character to an index
     num_iterations -- number of iterations to train the model for
     n_a -- number of hidden neurons in the softmax layer
-    dino_names -- number of dinosaur names you want to sample at each iteration. 
+    dino_names -- number of dinosaur names you want to sample at each iteration.
     vocab_size -- number of unique characters found in the text, size of the vocabulary
-    
+
     Returns:
     parameters -- learned parameters
     """
@@ -209,28 +209,28 @@ def model_(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_
                 # Sample indexes and print them
                 sampled_indexes = sample(parameters, char_to_ix, seed)
                 print_sample(sampled_indexes, ix_to_char)
-                seed += 1  # To get the same result for grading purposed, increment the seed by one. 
+                seed += 1  # To get the same result for grading purposed, increment the seed by one.
             print('\n')
 
     return parameters
 
 def model(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_names = 7, vocab_size = 27):
     """
-    Trains the model and generates dinosaur names. 
-    
+    Trains the model and generates dinosaur names.
+
     Arguments:
     data -- text corpus
     ix_to_char -- dictionary that maps the index to a character
     char_to_ix -- dictionary that maps a character to an index
     num_iterations -- number of iterations to train the model for
     n_a -- number of hidden neurons in the softmax layer
-    dino_names -- number of dinosaur names you want to sample at each iteration. 
+    dino_names -- number of dinosaur names you want to sample at each iteration.
     vocab_size -- number of unique characters found in the text, size of the vocabulary
-    
+
     Returns:
     parameters -- learned parameters
     """
-    
+
     with open("dinos.txt") as f:
         examples = f.readlines()
         examples = [x.lower().strip() for x in examples]
@@ -240,7 +240,7 @@ def model(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_n
     n_y = vocab_size
     parameters = initialize_parameters(n_a, n_y, n_y)
     a_prev = np.zeros((n_a, 1))
-    
+
     # Optimization loop
     for i in range(num_iterations):
         # create example pairs
@@ -261,14 +261,12 @@ def model(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_n
                 # Sample indexes and print them
                 sampled_indexes = sample(parameters, char_to_ix, seed)
                 print_sample(sampled_indexes, ix_to_char)
-                seed += 1  # To get the same result for grading purposed, increment the seed by one. 
+                seed += 1  # To get the same result for grading purposed, increment the seed by one.
             print('\n')
-        
+
     return parameters
 
 def test_model():
     parameters = model(data, ix_to_char, char_to_ix)
     # print(parameters)
-
-
 
