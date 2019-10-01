@@ -10,3 +10,5 @@ __pycache__
 **/models/*
 **/*.zip
 
+# Use the double underslashes to mark something as ignored
+__*
